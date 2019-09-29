@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Hash calculator</title>
+</head>
+<body>
+        <input type="text" id="name" placeholder="name">
+        <input type="text" id="rollno" placeholder="rollno">
+        <input type="text" id="difficulty" placeholder="difficulty">
+        <button type="submit" id="submit" onclick="callhash()">submit</button>
+        <div id="hash"></div>
+    <script>
+        const url = "http://localhost:3000";
+
+        if(hash) {
+            console.log(hash)
+        }
+        function callhash() {
+            _post('/hash', {
+                name: document.getElementById("name").value,
+                rollno: document.getElementById("rollno").value,
+                difficulty: document.getElementById("difficulty").value
+            }).then((hash) => {
+                console.log(hash)
+                document.getElementById("hash").innerHTML = hash.hash;
+            })
+        }
+
+        function fetchConfig(method, load) {
+              const headers = new Headers();
+              headers.append('Content-Type', 'application/json');
+              //some new text added want to add more, need more testing
+              headers.append('Accept', 'application/json');
+              headers.append('Access-Control-Allow-Origin', url);
+                                 const config = {
+                method: method,
+                credentials: 'include',
+                headers: headers
+              };
+              if (method === 'post') {
+                const payload = JSON.stringify(load);
+                config.body = payload;
+              }
+            return Object.assign({}, config);
+            };
+                                                                  
+            function _get(path) {
+              console.log(fetchConfig)
+              const promise = new Promise((resolve, reject) => {
+                const serverPath = url + path;
+                const fetchConfigs = fetchConfig('get');
+                fetch(serverPath, fetchConfigs).then((response) => {
+                  return response.json();
+                }).then((data) => {
+                  return resolve(data);
+                }).catch((err) => {
+                  return reject(err);
+                });
+              });
+              return promise;
+            }
+                     
+            function _post(path, payload) {
+              console.log(path, payload)
+              const promise = new Promise((resolve, reject) => {
+                const serverPath = url + path;
+                const fetchConfigs = fetchConfig('post', payload);
+                fetch(serverPath, fetchConfigs).then((response) => {
+                  return response.json();
+                }).then((data) => {
+                  return resolve(data);
+                }).catch((err) => {
+                  return reject(err);
+                });
+              });
+              return promise;
+            }
+
+    </script>
+</body>
+</html>
